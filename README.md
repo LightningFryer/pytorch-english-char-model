@@ -7,3 +7,4 @@ This project uses timm's "efficientnet_b0" model to create a model to take an im
 - dataset: [English Alphabets by Mohneesh_Sreegirisetty from Kaggle](https://www.kaggle.com/datasets/mohneesh7/english-alphabets)
 
 ## Training Loss vs Validation Loss Graph
+![image](https://github.com/LightningFryer/pytorch-english-char-model/blob/1dcdc82f0a2f54c367b31e152a23ed4fa939335a/Training_Loss_vs_Validation_Loss.png)
