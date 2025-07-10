@@ -43,7 +43,7 @@ class EnglishCharacterDataset(Dataset):
 from random import randint
 
 transform = transforms.Compose([
-    transforms.Resize((224, 224)),
+    transforms.Resize((128, 128)),
     transforms.ToTensor()
 ])
 
