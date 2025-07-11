@@ -5,6 +5,7 @@ print("Path to dataset files:", path)
 print("Dataset laoding complete")
 
 data_dir = 'C:/Users/User/.cache/kagglehub/datasets/mohneesh7/english-alphabets/versions/1/english_alphabets'
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -139,43 +140,46 @@ optimizer = optim.Adam(model.parameters(), lr=0.001)
 print(torch.cuda.is_available())  # Should print: True
 print(torch.cuda.get_device_name(0))  # Should print: NVIDIA GeForce RTX 3050
 
-
-for epoch in range(num_epochs):
-  model.train() #!!!!!!!!!!!!!!!!!!!
-  runningLoss = 0.0
-  for images, labels in tqdm(trainDataLoader, desc='Training loop'):
-    # Move inputs and labels to the device
-    images, labels = images.to(device), labels.to(device)
-
-    optimizer.zero_grad()
-    outputs = model(images)
-    loss = criterion(outputs, labels)
-    loss.backward()
-    optimizer.step()
-    runningLoss += loss.item() * labels.size(0)
-  train_loss = runningLoss / len(trainDataLoader.dataset)
-  train_losses.append(train_loss)
-
-  # Validation phase
-  model.eval()
-  running_loss = 0.0
-
-  with torch.no_grad():
-    for images, labels in tqdm(validDataLoader, desc='Validation loop'):
+if __name__ == "__main__":
+  for epoch in range(num_epochs):
+    model.train() #!!!!!!!!!!!!!!!!!!!
+    runningLoss = 0.0
+    for images, labels in tqdm(trainDataLoader, desc='Training loop'):
       # Move inputs and labels to the device
       images, labels = images.to(device), labels.to(device)
 
+      optimizer.zero_grad()
       outputs = model(images)
       loss = criterion(outputs, labels)
-      running_loss += loss.item() * labels.size(0)
+      loss.backward()
+      optimizer.step()
+      runningLoss += loss.item() * labels.size(0)
+    train_loss = runningLoss / len(trainDataLoader.dataset)
+    train_losses.append(train_loss)
 
-    val_loss = running_loss / len(validDataLoader.dataset)
-    val_losses.append(val_loss)
-    print(f"Epoch {epoch+1}/{num_epochs} - Train loss: {train_loss}, Validation loss: {val_loss}")
+    # Validation phase
+    model.eval()
+    running_loss = 0.0
 
-plt.plot(train_losses, label='Training loss')
-plt.plot(val_losses, label='Validation loss')
-plt.legend()
-plt.title("Loss over epochs")
-plt.show()
+    with torch.no_grad():
+      for images, labels in tqdm(validDataLoader, desc='Validation loop'):
+        # Move inputs and labels to the device
+        images, labels = images.to(device), labels.to(device)
+
+        outputs = model(images)
+        loss = criterion(outputs, labels)
+        running_loss += loss.item() * labels.size(0)
+
+      val_loss = running_loss / len(validDataLoader.dataset)
+      val_losses.append(val_loss)
+      print(f"Epoch {epoch+1}/{num_epochs} - Train loss: {train_loss}, Validation loss: {val_loss}")
+
+  plt.plot(train_losses, label='Training loss')
+  plt.plot(val_losses, label='Validation loss')
+  plt.legend()
+  plt.title("Loss over epochs")
+  plt.show()
+
+  torch.save(model.state_dict(), "./english_char_model_state.pt")
+  torch.save(model, "./english_car_model.pt")
 
